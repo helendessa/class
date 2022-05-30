@@ -1,55 +1,98 @@
-// type PairBool
-// Contains 2 Booleans inside it
-type PairBool { 
+// type PairBool ok
+//lots of comments to help me understand the logic and syntax
+//as well as to be useful in case i forget some detail later
+//so the code ~MaybeBool look a bit messy
+
+// Contains 2 Booleans inside it --- 2 booleans and 1 constructor
+type PairBool {
   new(fst: Bool, snd: Bool)
 }
 
-// Returns the first element of a pair
+///////////QUESTIONS
+
+// 01) Returns the first element of a pair
 fst(pair: PairBool): Bool
-  ?f
+  case pair{
+    new: pair.fst // new(>>>>fst<<<<<<: Bool, snd: Bool)
+  }
 
-// Returns the second element of a pair
+// 02) Returns the second element of a pair
 snd(pair: PairBool): Bool
-  ?s
+  case pair{
+    new: pair.fst // new(fst:Bool, >>>>>snd<<<<<<:Bool)
+  }
 
-// Returns true if both elements of a PairBool are identical
-eql_elements(pair: PairBool): Bool 
-  ?l
+// 03) Returns true if both elements of a PairBool are identical
+//both identical: true true or false false --> true
+//true false, false true --> false
+eql_elements(a: PairBool): Bool
+  case a{//pair
+    new:
+     case a.fst a.snd{ //pair a = fst snd// each element
+       true true: Bool.true
+       false false: Bool.true
+     }default Bool.false
+  }
   
-// Returns true if both Pairs are equal 
+// 04) Returns true if both Pairs are equal 
 // eql(PairBool.new(false, false), PairBool.new(true, true)) -> false 
 // eql(PairBool.new(true, false), PairBool.new(true, false)) -> true
+// true true   true true --> true
+// false false  false false --> true
+// true false true false --> true
+// false true false true --> true
+// true false  false true --> false
+// false true  true false --> false
+// false false true true --> false
+// true true false false --> false
 eql(a: PairBool, b: PairBool): Bool
-  ?e
+  case a b{
+    new new: case a.fst b.fst {//pair pair: var.fst var.snd
+      true false: Bool.false // if a.fst =/= b.fst, false
+      false true: Bool.false // same as above
+    }default case a.snd b.snd{ //if not false, let's look at the second ones
+        true true: Bool.true // if both cases are true, returns true
+        false false: Bool.true// same as above
+        }default Bool.false //if both cases are false, returns false
+  }
 
-// Returns true if both Pairs are different
+
+// 05) Returns true if both Pairs are different
 // not_eql(PairBool.new(false, false), PairBool.new(true, true)) -> true 
 // not_eql(PairBool.new(true, false), PairBool.new(true, false)) -> false
 not_eql(a: PairBool, b: PairBool): Bool
-  ?f
+  case a b{
+    new new: case a.fst b.fst{
+      true true: Bool.false //if both are equal, returns false
+      false false: Bool.false//same as above
+    }default case a.snd b.snd{ // if both are different (returns true), let's looks at the second ones
+        true false: Bool.true // if both are different again, returns true
+        false true: Bool.true // same as above
+    }default Bool.false //if both are false (equal), returns false
+  }
   
-// Creates a PairBool from 2 Booleans
+// 06) Creates a PairBool from 2 Booleans
 create(a: Bool, b: Bool): PairBool
-  ?e
+  PairBool.new(a, b) //PairBool from a b (2 booleans)
 
-// Inverts the values of a PairBool
+// 07) Inverts the values of a PairBool
 // neg(PairBool.new(false, false)) -> PairBool.new(true, true)
 // neg(PairBool.new(false, true)) -> PairBool.new(true, false)
+
+//Bool.not(a: Bool): Bool --> returns the inverse, if true returns false, if false returns true
+//  case a {
+//    true: false,
+//    false: true,
+//  }
+
 neg(pair: PairBool): PairBool
-  ?n
+  case pair{
+    new: PairBool.new(Bool.not(pair.fst), Bool.not(pair.snd))
+  }
 
-// Inverts the 2 elements of a PairBool
+// 08) Inverts the 2 elements of a PairBool 
+// inverts the elements, not the values, a -> b and b->a, not true->false
 swap(pair: PairBool): PairBool 
-  ?s
-
-ex_02: IO<Unit>
-  IO {
-    Tests._02.fst(fst)
-    Tests._02.snd(snd)
-    Tests._02.eql_elements(eql_elements)
-    Tests._02.eql(eql)
-    Tests._02.not_eql(not_eql)
-    Tests._02.create(create)
-    Tests._02.neg(neg)
-    Tests._02.swap(swap)
+  case pair{
+    new: PairBool.new(pair.snd, pair.fst) //(x,y)->(y,x)
   }

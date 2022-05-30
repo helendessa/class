@@ -1,72 +1,127 @@
-// Basic Exercises involving Bools
+// Basic Exercises involving Bools ok
+
+//lots of comments to help me understand the logic and syntax
+//as well as to be useful in case i forget some detail later
+// so the file maybe look a bit messy
 
 type Bool {
   true
   false
 }
 
-// Is true
+//////////// QUESTIONS
+
+// 01) Is true
 // Returns true if input is true
-is_true(a: Bool): Bool
-  ?a 
+is_true(a: Bool): Bool //function
+  a //true if true...
 
-
-// Is false
+// 02) Is false
 // Returns true if input is false
-is_false(a: Bool): Bool
-  ?b
+is_false(a: Bool): Bool //NameFunction(var: type):return_type
+  case a {
+    true: Bool.false //(true): returns Bool.(false) //type_constructor: result
+    false: Bool.true //(false): returns Bool.(true) //type_constructor: result
+  }
 
-// Negation
+// 03) Negation
 // Returns the opposite of a Bool
 neg(b: Bool): Bool 
-  ?c
+  case b {
+    true: Bool.false //opposite true = false // true returns false
+    false: Bool.true //opposite false = true // false returns true
+  }
 
-// And
+// 04) And
 // Returns true if both inputs are true
+//// 
+////       case a           (both) inputs (true) returns (true)
+////     /        \         a true b true = true
+////   true       false     a true b false = false
+////    |                   a false b true = false
+///   case b                a false b false = false
+////  /     \               
+//  true    false 
+
+and(a: Bool, b: Bool): Bool // now (two) var!!
+  case a { //first var
+    true: case b{ // second var inside first var if first var true
+      true: Bool.true
+      false Bool.false
+    } //now second var inside first var if first var false
+    false: case b{ //if a is false, even if b is true returns false; both needs to be true
+      true: Bool.false
+      false: Bool.false
+    }
+  }
+
+//now using default for cleaner code
+//// 
+////       case a           (both) inputs (true) returns (true)      [default] returns false
+////     /        \         a true b true = true
+////   true       false     a true b false = false  [default]       
+////    |                   a false b true = false  [default]
+///   case b                a false b false = false [default]
+////  /     \               
+//  true    false 
 and(a: Bool, b: Bool): Bool
-  ?d
+  case a b {
+    true true: Bool.true //both true returns true
+  }default Bool.false //"else" false --- And function needs both to be true to returns true
 
-// Or
+// 06) Or
 // Returs true if any input is true
-or(a: Bool, b: Bool): Bool
-  ?e
+or(a: Bool, b: Bool): Bool //two var too
+  case a b { //two var a b
+    false false: Bool.false //unique case the return is false
+  }default Bool.true //any other case than above is true, so default Bool.true
 
-// Equal
-// Returs true if both inputs are identical
+// 07) Equal
+// Returs true if both inputs are identical // true if a = b
 eql(a: Bool, b: Bool): Bool
-  ?f
+  case a b{
+    true true: Bool.true //true true, true = true, so true
+    false false: Bool.false//false false, false = false, so true (that both are identical)
+  }default Bool.false //if both are not true or false, so false
 
-// Xor
+// 08) Xor
 // Returns true if both inputs are different
 xor(a: Bool, b: Bool): Bool
-  ?g
+  case a b{
+    true false: Bool.true //true false, true =/= false, so true (that both are different)
+    false true: Bool.true//false true, false =/= false, so true (both are different)
+  }default Bool.false //any other case than the two above, a = b, so false
 
-// Nor
+// 09) Nor
 // Returns true if both inputs are false
 nor(a: Bool, b: Bool): Bool
-  ?h
+  case a b{
+    false false: Bool.true //false false = true
+  }default Bool.false //any other case = false
 
-// Nand
+// 10) Nand
 // Returns false only if both inputs are true
 nand(a: Bool, b: Bool): Bool
-  ?i
+  case a b{
+    true true: Bool.false //false only if false false
+  }default Bool.true //true for any other case than the above
 
-// Xnor
+// 11) Xnor
 // Returns true if both inputs are identical
+///                           case a                                    a a = true --- (*1)
+///                          /       \                                  a b = false    (*2)
+///                      true       false                               b a = false    (*3)
+///                   (returns b)     |                                 b b = true --- (*4)
+///                                 case b
+///                                /      \
+///                              true     false
+///                   (returns b, first a,  (returns a, so both are a,               
+//                           now b, false)                  identical)
 xnor(a: Bool, b: Bool): Bool
-  ?j
-
-
-ex_00: IO<Unit>
-  IO {
-    Tests._00.is_true(is_true)
-    Tests._00.is_false(is_false)
-    Tests._00.neg(neg)
-    Tests._00.and(and)
-    Tests._00.or(or)
-    Tests._00.eql(eql)
-    Tests._00.xor(xor)
-    Tests._00.nor(nor)
-    Tests._00.nand(nand)
-    Tests._00.xnor(xnor)
-  }
+  case a b{
+    true: b //*1
+    false case b{
+      true Bool.false //*2
+      false Bool.true //*4
+    }
+  }false //*3

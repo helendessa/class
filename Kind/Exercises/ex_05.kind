@@ -1,4 +1,7 @@
-// Basic Exercises involving Pairs
+// Basic Exercises involving Pairs  ok
+//some comments to help me understand the logic and syntax
+//as well as to be useful in case i forget some detail later
+//so the code ~MaybeBool look a bit messy
 
 type Pair <A: Type, B: Type> {
   new(fst: A, snd: B)
@@ -7,16 +10,24 @@ type Pair <A: Type, B: Type> {
 // Example:
 // Swaps the elements of a pair
 swap<A: Type, B: Type>(pair: Pair<A,B>): Pair<B,A>
-  ?s
+  case pair {
+    new: Pair.new<B, A>(pair.snd, pair.fst) //A,B -> B,A
+  }
 
-// Returns the first element of a pair
+// 01) Returns the first element of a pair
 first<A: Type, B: Type>(pair: Pair<A,B>): A
-  ?a
+  case pair{
+    new: pair.fst //first element of the pair = fst
+  }
+  
 
-// Returns the second element of a pair
+// 02) Returns the second element of a pair
 second<A: Type, B: Type>(pair: Pair<A,B>): B
-  ?a
+  case pair{
+    new: pair.snd //second element of the pair = snd
+  }
 
-// Applies a function to both elements of a Pair
+// 03) Applies a function to both elements of a Pair
 map<A: Type, B: Type>(fn: A -> B, pair: Pair<A,A>): Pair<B,B>
-  ?a
+  Pair.new<B,B>(fn(pair.fst), fn(pair.snd)) //A,A -> B,B
+  //       B,B       ( fst           snd )

@@ -1,102 +1,229 @@
-// Advanced exercises involving recursion
+// Advanced exercises involving recursion // to do: 9, 10, 11, 12
+//lots of comments to help me understand the logic and syntax
+//as well as to be useful in case i forget some detail later
+//so the code ~MaybeBool look a bit messy
 
 type Nat {
   zero
   succ(pred: Nat)
 }
 
-// Doubles a number
+// 01) Doubles a number
+// double (n) = n + 1 * n
+//"skills"
+//1. add 1   nat.succ(...)
+//2. sub 1   case n {... succ: n.pred}
+//3. rep     recursion f(...)
 dbl(a: Nat): Nat // double
+  case a{
+    zero: Nat.zero //0 * 2 = 0
+    succ: Nat.succ(Nat.succ(dbl(a.pred)))
+  }
+//              +1      +1        -1
+  // |||
+  //------------
+  // 
+  // ||          -1
+  //------------
+  // ||          +2
+  //
+  // |           -1
+  //------------
+  // ||||        +2
+  //
+  //             -1
+  //------------
+  // ||||||      +2
 
-  ?b
-
-// Addition
+// 02) Addition
 add(a: Nat, b: Nat): Nat
+  case a{
+    zero: b // if a = 0, 0 + b = b
+    succ: case b{ // if a =/= 0
+      zero: a // if b = 0, a + 0 = a
+      succ: add(Nat.succ(a),b.pred)
+    }          //  +1         -1
+  }
+//add(1,2) = 3
+//||
+//-------------
+//|
+//
+//|             -1
+//-------------
+//||            +1
+//
+//-------------
+//|||           +1
+//---------------------
+//
+//add(2,4)
+//||
+//-------------
+//||||
+//
+//|             -1
+//-------------
+//|||||         +1
+//
+//              -1
+//-------------
+//||||||        +1
 
-  ?a
-
-// Multiplication
+// 03) Multiplication
 mul(a: Nat, b: Nat): Nat
-  
-  ?m
+  case a{
+    zero: Nat.zero //0 * b = 0
+    succ: case b{
+        zero: Nat.zero //a * 0 = 0
+        succ: add(a, mul(a, b.pred))
+    }          //a +   a * -1
+  }
+//mul(1,2)   ---- 1 * -1
+//
+//|
+//--------------
+//||
+//
+//|             -1
+//--------------
+//|||           +1
+//
+//mul(2,3)  ---- 2 * -1
+//
+//||
+//---------------
+//|||
+//
+//|               -1
+//---------------
+//||||            +1
+//
+//                
+//                -1
+//---------------
+//|||||           +1
 
-// Subtraction
-// 4 - 5 = 0
+// 04) Subtraction
+// 4 - 5 = 0 // Nat {0, 1, 2, ...}, stop = 0
 // 5 - 4 = 1
 sub(a: Nat, b: Nat): Nat
+  case a{
+    zero: Nat.zero //if a = 0, 0 - b = 0, stop = 0
+    succ: case b{
+      zero: a //if b = 0, a - 0 = a
+      succ: sub(a.pred, b.pred)
+    }            //-1     -1  //-1 until 0, then stop
+  }
 
-  ?s
+  //sub(1,2)
+  //
+  //|
+  //||
+  //---------
+  //
+  //          -1
+  //|         -1
+  //----------
+  //
+  //|         -1
+  //----------
 
-// Factorial
+// 05) Factorial
 // 4! = 24
 fac(a: Nat): Nat 
-  
-  ?f
+  case a{
+    zero: Nat.succ(Nat.zero) //0! = 1! = 1
+    succ: mul(a, fac(a.pred))
+  }         // a * (a-1)!
+// x! = x * (x-1)!
 
-// Equal
-eql(a: Nat, b: Nat): Bool // Given 2 numbers, it returns true if the 2 are the same and false if they are different.
-  
-  ?e 
+// 06) Equal
+eql(a: Nat, b: Nat): Bool // Given 2 numbers, it returns (true if the 2 are the same) and false if they are different.
+  case a b{
+    zero zero: Bool.true
+    zero succ: Bool.false // different *
+    succ zero: Bool.false // different *
+    succ succ: eql(a.pred, b.pred) //-1 until 0, then stop, -1n = -1n -> equal
+  }
+//cleaner code
+  case a b{
+    zero zero: Bool.true
+    succ succ: eql(a.pred, b.pred)
+  }default: Bool.false //different *
 
 // Do not use the "not" function to create the functions below
 
-// Greater than
+// 07) Greater than
 // 2 > 1 = True
 // 3 > 3 = False
 gtn(a: Nat, b: Nat): Bool // if A > B == True else false
-  
-  ?g
+  case a b{
+    succ zero: Bool.true //all naturals =/= 0 are >0
+    succ succ: gtn(a.pred, b.pred) // -1 until 0, then stop, -1n =/= -1x -> different, b the first to stop, then true
+  }default Bool.false // zero succ or zero zero
 
-// Lower than
+// 08) Lower than
 // 1 < 2 = True
 // 3 < 3 = False
 ltn(a: Nat, b: Nat): Bool // if A > B == False else true 
-  
-  ?l
+  case a b{
+    zero succ: Bool.true
+    succ succ: ltn(a.pred, b.pred) // a the first to stop, then true
+  }default Bool.false
 
-// Minimum
+// 09) Minimum // ltn
 // min(2, 3) = 2
 // min(4, 1) = 1
-min(a: Nat, b: Nat): Nat // if A < B then A else B
+min(a: Nat, b: Nat): Nat // if A < B then A else B // returns nat, not bool, so it's will be a or b
+  case a.num b.num{
+    zero zero: a // or b ..
+    zero succ: a 
+    succ zero: b 
+    succ succ: case ltn(a,b){
+      true: a 
+      false: b
+    }
+  } 
   
-  ?m2
-
-// Maximum
+// 10) Maximum // gtn
 // max(2, 3) = 3
 // max(4, 1) = 4
 max(a: Nat, b: Nat): Nat // if A > B then A else B
-  
-  ?m3
-
-
-// Divides a number by two
+  case a.num b.num {
+    zero zero: a // or b ? both equal...
+    zero succ: b 
+    succ zero: a 
+    succ succ: case gtn(a,b){
+      true: a 
+      false: b
+    }
+  }
+ 
+// 11) Divides a number by two
 // 2 / 2 = 1
 // 5 / 2 = 2
 // 1 / 2 = 0
 hlf(a: Nat): Nat
-  ?h
+  case a{
+    zero: Nat.zero
+    succ: Nat.succ(hlf(Nat.sub(a,Nat.succ(Nat.succ(Nat.zero)))))
+  }
 
-// Division
+// 2 = Nat.succ(Nat.succ(Nat.zero))
+
+// 12) Division
 // 1 / 2 = 0
 // x / 0 = 0
 // 5 / 2 = 2
 div(a: Nat, b: Nat): Nat // division
-  
-  ?d
-
-
-ex_04: IO<Unit>
-  IO {
-    Tests._04.dbl(dbl)
-    Tests._04.add(add)
-    Tests._04.mul(mul)
-    Tests._04.sub(sub)
-    Tests._04.fac(fac)
-    Tests._04.eql(eql)
-    Tests._04.gtn(gtn)
-    Tests._04.ltn(ltn)
-    Tests._04.min(min)
-    Tests._04.max(max)
-    Tests._04.hlf(hlf)
-    Tests._04.div(div)
+  case a.num b.num{
+    zero zero: Nat.zero
+    zero succ: Nat.zero
+    succ zero: Nat.zero
+    succ succ: Nat.succ(div(Nat.sub(a,b), b))  
   }
+
+// mul: n * x = x + x + (n times) + x
+// div: x : n = x - x - x ... until x - n = 0
+// 4 : 2 = 4 - 2 = 2 - 2 = 0 (-2 - 2 = 0)

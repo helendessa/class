@@ -1,47 +1,75 @@
-// type MaybeBool
-// It maybe holds a Boolean inside it
+// type MaybeBool ok
+//lots of comments to help me understand the logic and syntax
+//as well as to be useful in case i forget some detail later
+//so the code ~MaybeBool look a bit messy
 
-type MaybeBool { 
-  none 
-  some(value: Bool)
+// It maybe holds a Boolean inside it
+type MaybeBool {
+  none //maybe not exist
+  some(value: Bool) //maybe exist, maybe holds a value (boolean) inside it
  }
- // Returns true if Maybe is none
-is_none(a: MaybeBool): Bool
-  ?a
+ //var 
+
+///////////QUESTIONS
+
+// 01) Returns true if Maybe is none
+is_none(a: MaybeBool): Bool //returns a boolean
+  case a {
+    none: Bool.true //none returns boolean true --- true if maybe is none
+    some: Bool.false//some returns boolean false
+  }
     
-// Returns true if Maybe is some
+// 02) Returns true if Maybe is some
 is_some(a: MaybeBool): Bool
-  ?is
-// Returns true if both inputs are identical
+  case a {
+    none: Bool.false 
+    some: Bool.true//true if maybe is some
+  }
+
+// 03) Returns (true) if (both) inputs are (identical)
 // eql(MaybeBool.none,             MaybeBool.none            ) -> true
 // eql(MaybeBool.some(Bool.false), MaybeBool.none            ) -> false
 // eql(MaybeBool.some(Bool.true),  MaybeBool.some(Bool.false)) -> false
 // eql(MaybeBool.some(Bool.false), MaybeBool.some(Bool.false)) -> true
+  case a b{         
+    none none: Bool.true //both none, identifcal
+    some some: Bool.true //can holds value, so needs to know if the values are identical
+      case a.value b.value{//analyzing cases with values
+        true true: Bool.true//true = true, it's identical, so it's true
+        false false: Bool.true//false = false, it's identical, so it's true
+      }default Bool.false//if they're differents (true false, false true) it's false
+  }default Bool.false//none some, some none, differents, so it's false
 
-eql(a: MaybeBool, b: MaybeBool): Bool
-  ?q
-
-// Returns the value inside the MaybeBool.
+// 04) Returns the value inside the MaybeBool.
 // If there is no value contained, returns v instead
-extract(a: MaybeBool, v: Bool): Bool
-  ?e
+extract(a: MaybeBool, v: Bool): Bool //MaybeBool, Bool, returns Bool, the first example with that scenario
+  case a v{
+    none: v //no value = none, no value returns v, so it's none: v
+    some: a.value //returns the value inside MaybeBool, so it's some: a.value
+  }
 
-// Create a MaybeBool from a Boolean
+// 05) Create a MaybeBool from a Boolean
 // create(Bool.false) -> MaybeBool(Bool.false)
-create(a:Bool): MaybeBool
-  ?c
+create(a:Bool): MaybeBool //bool returns maybebool
+  MaybeBool.some(a) //a:Bool, returns MaybeBool from a, a boolean
 
-// Returns the first input that is a MaybeBool.some
+// 06) Returns the first input that is a MaybeBool.some
 // Returns MaybeBool.none if both are MaybeBool.none
+  ////               case a
+  ////              /      \
+  ///            none *1    some *2
+  ///              |          |
+  ///            case b       a
+  ///           /       \
+  ///      *3  some     none *4
+  ///           |         |
+  ///           b         a
 or(a: MaybeBool, b: MaybeBool) : MaybeBool 
-  ?or
+  case a {
+    some: a //*2
+    none: case b{ //*1
+      some: b //*3
+      none: MaybeBool.none //*4
+    }
 
-ex_01: IO<Unit>
-  IO {
-    Tests._01.is_none(is_none)
-    Tests._01.is_some(is_some)
-    Tests._01.eql(eql)
-    Tests._01.extract(extract)
-    Tests._01.create(create)
-    Tests._01.or(or)
   }
