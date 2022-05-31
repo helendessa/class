@@ -397,25 +397,95 @@ eql(a: Inte, b: Inte): Bool // Given two Integers, returns true if both are the 
 // int(false, 2) > int(true,  0) = False
 // int(true,  0) > int(false, 2) = True
 gtn(a: Inte, b: Inte): Bool // if A > B then True else false
-  ?gtn
+  case a b{
+    pos pos: case a.num b.num{
+      zero zero: Bool.false
+      zero succ: Bool.false 
+      succ succ: Nat.sub(pos_to_nat(a.num), pos_to_nat(b.num))
+        zero: Bool.false 
+        succ: Bool.true
+      succ zero: Bool.false
+    }
+    neg neg: case a.num b.num{
+      one one: Bool.false 
+      one pred: Bool.true
+      pred pred: Nat.sub(neg_to_nat(a.num), neg_to_nat(b.num))
+        zero: Bool.false
+        succ: Bool.true
+    }
+    pos neg: Bool.true
+    neg pos: Bool.false
+  }
+// + + 
+// 0 0 F
+// 0 succ F
+// succ succ pos to nat sub
+// 7 - 8 = 0 (nat) F
+// 9 - 8 = 1 (nat) T
+// + - T
+// - + F
+// - -
+// 1 1 F
+// 1 pred T
+// pred one F
+// pred pred neg to nat sub
+// -7 - (-8) = -7 + 8 = 1 //// -7 > -8 T succ
+// -7 - (-6) = -7 + 6 = -1 -> 0 (natural limit) //// -7 < -6 F zero
 
 // 09) Lower than
 // int(false, 1) < int(true,  0) = True
 // int(true,  0) < int(false, 1) = False
 ltn(a: Inte, b: Inte): Bool // if A > B then False else true
-  ?ltn
+  case a b{
+    pos pos: case a.num b.num{
+      zero zero: Bool.false
+      zero succ: Bool.true
+      succ succ: Nat.sub(pos_to_nat(a.num), pos_to_nat(b.num))
+        zero: Bool.true
+        succ: Bool.false
+      succ zero: Bool.false
+    }
+    pos neg: Bool.false
+    neg neg: case a.num b.num{
+      one one: Bool.false
+      one pred: Bool.false
+      pred pred: Nat.sub(neg_to_nat(a.num), neg_to_nat(b.num))
+        zero: Bool.true
+        succ: Bool.false
+      pred one: Bool.true
+    }
+  }
+// + +
+// 0 0 F
+// 0 succ V
+// succ 0 F
+// succ succ pos to nat sub
+// 7 - 8 = 0 (nat) T
+// 9 - 8 = 1 (nat) F
+// - -
+// one one F
+// one pred F
+// pred pred neg to nat sub
+// -4 - (-5) = 1 F
+// -4 - (-3) = -1 -> zero T
 
 // 09) Minimum
 // min(int(false, 1), int(true,  0)  = -1
 // min(int(false, 1), int(false, 3)) = -3
 min(a: Inte, b: Inte): Inte // if A < B then A else B
-  ?min
+  case ltn(a, b){
+    true: a 
+    false: b
+  }
 
 // 10) Maximum
 // max(int(false, 1), int(true,  0)) = +0
 // max(int(false, 1), int(false, 3)) = -1
 max(a: Inte, b: Inte): Inte // if A > B then A else B
-  ?max
+  case gtn(a, b){
+    true: a 
+    false: b
+  }
 
 // 11) Half
 // Divides an Integer by two
@@ -423,16 +493,53 @@ max(a: Inte, b: Inte): Inte // if A > B then A else B
 // int(false, 1) = +0
 // int(true,  6) = +3
 hlf(a: Inte): Inte
-  ?hlf
-
+  div(a: Inte, b: Inte): Inte
+  case a {
+    pos: div(a, Pos.succ(Pos.succ(Pos.zero)))
+    neg: div(a, Pos.succ(Pos.succ(Pos.zero)))
+  }
+  
 // 12) Division
 // int(true,  2)  / int(true,  2)  = +1
 // int(false, 8)  / int(true,  4)  = -2
 // int(false, 11) / int(false, 5)  = +2
 // int(true,  10) / int(false, 12) = +0
-div(a: Inte, b: Inte): Inte 
-  ?div
+div(a: Inte, b: Inte): Inte
+  case a.num b.num {
+    pos pos: gtn(a, b)
+      true: case a.num b.num{
+        true: Inte.pos(nat_to_pos(Nat.succ(div(Nat.sub(pos_to_nat(a.num),pos_to_nat(b.num)), b.num))))
+        false: Inte.pos(nat_to_pos(Nat.succ(div(Nat.sub(pos_to_nat(b.num),pos_to_nat(a.num)), a.num))))
+      }
+    pos neg: gtn(pos_to_nat(a.num), neg_to_nat(b.num))
+      true: Inte.neg(nat_to_neg(Nat.succ(div(Nat.sub(pos_to_nat(a.num),neg_to_nat(b.num)), b.num))))
+      false: Inte.neg(nat_to_neg(Nat.succ(div(Nat.sub(neg_to_nat(b.num),pos_to_nat(a.num)), a.num))))
+    neg neg: gtn(neg_to_nat(a.num), neg_to_nat(b.num))
+      true: Inte.pos(nat_to_pos(Nat.succ(div(Nat.sub(neg_to_nat(a.num),neg_to_nat(b.num)), b.num))))
+      false: Inte.pos(nat_to_pos(Nat.succ(div(Nat.sub(neg_to_nat(b.num),neg_to_nat(a.num)), a.num))))
+    neg pos: gtn(neg_to_nat(a.num), pos_to_nat(b.num))
+      true: Inte.neg(nat_to_neg(Nat.succ(div(Nat.sub(neg_to_nat(a.num),pos_to_nat(b.num)), b.num))))
+      false: Inte.neg(nat_to_neg(Nat.succ(div(Nat.sub(pos_to_nat(b.num),neg_to_nat(a.num)), a.num))))
+  }
 
+// division = multiples sub
+// 4 : 2 = 4 - 2 - 2 
+// 6 : 3 = 6 - 3 - 3
+// a > b
+// b < a
+// + + = +
+// + - = -
+// - - = +
+// - + = -
+
+//div(a: Nat, b: Nat): Nat // division
+//  case a.num b.num{
+//    zero zero: Nat.zero
+//    zero succ: Nat.zero
+//    succ zero: Nat.zero
+//    succ succ: Nat.succ(div(Nat.sub(a,b), b))  
+//  }
+//
 ex_06: IO<Unit>
   IO {
     Tests._06.inc(inc)

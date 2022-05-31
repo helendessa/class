@@ -1,0 +1,25 @@
+// Challeng 30/05
+
+Find_and_replace(to_remove: String, to_add: String, str: String): String
+  case to_remove {
+      nil: String.nil
+      cons: case stringequal(to_remove, str){ // is to_remove = str?
+          true: String.cons(to_add, Find_and_replace(to_remove, str)) // T, then replace -> to_add
+          false: str // F, returns the same, str
+      }
+  }
+c0530: _
+  Find_and_replace("test", "example", "In this test, the word test should be replaced by the word example.")
+  // This should be the result: "In this example, the word example should be replaced by the word example."
+
+
+stringequal(xs: String, ys: String): Bool
+  case xs ys {
+    nil nil: Bool.true
+    nil cons: Bool.false
+    cons nil: Bool.false
+    cons cons: case U16.eql(xs.head, ys.head){
+      true: stringequal(xs.tail, ys.tail) //head = head? ok, then verify the rest
+      false: Bool.false
+    } 
+  }
