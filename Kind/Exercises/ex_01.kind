@@ -1,16 +1,10 @@
-// type MaybeBool ok
-//lots of comments to help me understand the logic and syntax
-//as well as to be useful in case i forget some detail later
-//so the code ~MaybeBool look a bit messy
-
+// type MaybeBool
 // It maybe holds a Boolean inside it
 type MaybeBool {
   none //maybe not exist
   some(value: Bool) //maybe exist, maybe holds a value (boolean) inside it
  }
  //var 
-
-///////////QUESTIONS
 
 // 01) Returns true if Maybe is none
 is_none(a: MaybeBool): Bool //returns a boolean

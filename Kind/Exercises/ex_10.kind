@@ -299,9 +299,15 @@ filter(cond: Char -> Bool, xs: String): String
 
 //flatten([a,b,c]) -> "HIHellotext"
 flatten(lxs: List<String>): String
-  ?flatten
-
-
+  case lxs {
+    nil: List.nil<String>
+    cons: concat(lxs.head, flatten(ls.tail)) // concat head/tail... head/tail... head/tail.. until nil
+  }
+//concat<A: Type>(xs: List<A>, ys: List<A>): List<A>
+//  case xs {
+//    nil: ys
+//    cons: List.cons<A>(xs.head, concat<A>(xs.tail, ys)) // ..[]..[  ][][  ]
+//  }
 
 // 19) Drops a n Number of characteres from a String
 
@@ -331,10 +337,15 @@ take(n: Nat xs: String): String
     }
   }
 
-// 21) Takes a x part of the string after a n Index of values get dropped
+// 21) ((Takes)) a x part of the string after a n Index of values get ((dropped))
 
 //slice(1, 2, a) -> "I"
 //slice(2, 4, b) -> "ll"
 //slice(1, 3, c) -> "ex"
 slice(n: Nat, x: Nat, xs: String): String
-  
+  drop(n, take(x, xs))
+
+// take = Takes n elements of a String (((Takes)) a x part of the string)
+// drop = Drops a n Number of characteres from a String (n Index of values get ((dropped)))
+// 1st = drop, 2nd = take
+// drop after take drop (n, take)

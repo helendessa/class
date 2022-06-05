@@ -1,14 +1,8 @@
-// type PairBool ok
-//lots of comments to help me understand the logic and syntax
-//as well as to be useful in case i forget some detail later
-//so the code ~MaybeBool look a bit messy
-
+// type PairBool
 // Contains 2 Booleans inside it --- 2 booleans and 1 constructor
 type PairBool {
   new(fst: Bool, snd: Bool)
 }
-
-///////////QUESTIONS
 
 // 01) Returns the first element of a pair
 fst(pair: PairBool): Bool

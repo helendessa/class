@@ -1,0 +1,70 @@
+// ListMap Exercises
+
+type ListMap <A: Type> { 
+  empty
+  cons(head: Pair<Nat, A>, tail: ListMap<A>)
+}
+
+// 2 sintax sugars (both only works for types with 1 constructor!!!!!)
+// open:
+// case lm.head (new: .... .. .. )
+//                     open
+// @: acess w/o open
+// let head_fst = lm.head@fst
+
+// 01) Inserts a value
+set<A: Type>(key: Nat, value: A, lm: ListMap<A>): ListMap<A>
+  case lm {
+    empty: ListMap.cons<A>(Pair.new<Nat, A>(key, value), ListMap.empty<A>) // (pair), empty
+    cons: case Nat.eql(key, lm.head@fst){
+      true: ListMap.cons<A>(Pair.new<Nat, A>(key, value), lm.tail) // (key value)
+      false: ListMap.cons<A>(lm.head, set<A>(key, value, lm.tail)) // add to the map
+    }
+  }
+// (key, value) -> Pair
+
+// 02) Returns a Value from a Key (if there is one) // class
+get<A: Type>(key: Nat, lm: ListMap<A>): Maybe<A>
+  case lm {
+    empty: Maybe.none<A>
+    cons: case lm.head {
+      new: case Nat.eql(lm.head.fst, key){
+        true: Maybe.some<A>(lm.head.snd)
+        false: get<A>(key, lm.tail)
+    }
+  }
+}
+// 03) Applies a function to a Value from a Key
+mut<A: Type>(key: Nat, fn: A -> A, lm: ListMap<A>): ListMap<A>
+  ?mut
+
+// 04) Converts the ListMap to a String
+show<A: Type>(fn: A -> String, lm: ListMap<A>): String
+  ?show
+
+// 05) Checks if the ListMap has a key
+has<A:Type>(key: Nat, lm: ListMap<A>): Bool
+  ?has
+
+// 06) Removes all Elements that doesn't satisfy a condition
+filter<A: Type>(cond: A -> Bool, lm: ListMap<A>): ListMap<A>
+  ?filter
+
+// 07) Applies a function to all Values
+map<A: Type>(fn: A -> A, lm: ListMap<A>): ListMap<A>
+  ?map
+
+// Runs x gets and y sets
+stress_test(sets: Nat, gets: Nat): String
+  let map = ListMap.empty!
+  for i from 0 to sets with map:
+    set<Nat>(i, 50, map)
+  let text = "test"
+  for i from 0 to gets with text:
+    let get = get<Nat>(i, map)
+    text
+  text
+
+ex_11:
+  // stress_test(10000, 10000)
+  "test"

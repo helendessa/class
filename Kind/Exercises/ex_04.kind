@@ -1,7 +1,4 @@
-// Advanced exercises involving recursion // to do: 9, 10, 11, 12
-//lots of comments to help me understand the logic and syntax
-//as well as to be useful in case i forget some detail later
-//so the code ~MaybeBool look a bit messy
+// Advanced exercises involving recursion
 
 type Nat {
   zero

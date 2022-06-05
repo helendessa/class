@@ -1,15 +1,8 @@
-// Basic Exercises involving Bools ok
-
-//lots of comments to help me understand the logic and syntax
-//as well as to be useful in case i forget some detail later
-// so the file maybe look a bit messy
-
+// Basic Exercises involving Bools
 type Bool {
   true
   false
 }
-
-//////////// QUESTIONS
 
 // 01) Is true
 // Returns true if input is true

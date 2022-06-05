@@ -1,7 +1,4 @@
 // Basic exercises involving Lists
-//lots of comments to help me understand the logic and syntax
-//as well as to be useful in case i forget some detail later
-//so the code ~MaybeBool look a bit messy
 
 type List <A: Type> {
   nil
